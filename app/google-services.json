@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "330402489997",
+    "firebase_url": "https://admtrackjce-default-rtdb.firebaseio.com",
+    "project_id": "admtrackjce",
+    "storage_bucket": "admtrackjce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:330402489997:android:6602eab99264aa8754a4c4",
+        "android_client_info": {
+          "package_name": "com.micom.admissiontrackjce"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "330402489997-88akml56hs9ivgu0s1kasv3f7k3sdjjr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDVpAEwq23g7C3BcTLy2Pq6r7-aXoQWtkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "330402489997-88akml56hs9ivgu0s1kasv3f7k3sdjjr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
