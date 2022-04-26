@@ -45,8 +45,6 @@ fun sendData(name: String,
         }
 }
 
-
-
 @Destination
 @Composable
 fun TextInputs(navigator: DestinationsNavigator) {
@@ -150,12 +148,15 @@ fun TextInputs(navigator: DestinationsNavigator) {
 @Composable
 fun DropDownMenu(suggestions: List<String>,listName: String): String {
 
+
+
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf("") }
 
     var textfieldSize by remember { mutableStateOf(Size.Zero) }
 
     val icon = if (expanded)
+
         Icons.Filled.KeyboardArrowUp
     else
         Icons.Filled.KeyboardArrowDown
@@ -192,3 +193,11 @@ fun DropDownMenu(suggestions: List<String>,listName: String): String {
     }
     return selectedText
 }
+/*
+
+@Composable
+fun MenuBar(){
+    TopAppBar() {
+
+    }
+}*/

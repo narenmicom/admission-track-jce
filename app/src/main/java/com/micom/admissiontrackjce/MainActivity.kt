@@ -27,6 +27,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.ramcosta.composedestinations.DestinationsNavHost
@@ -35,11 +37,19 @@ import kotlin.random.Random
 
 class MainActivity : ComponentActivity() {
 
+    private lateinit var auth:FirebaseAuth
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+                auth = Firebase.auth
+
                 DestinationsNavHost(navGraph = NavGraphs.root)
         }
+    }
+    public override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+
     }
 }
 
