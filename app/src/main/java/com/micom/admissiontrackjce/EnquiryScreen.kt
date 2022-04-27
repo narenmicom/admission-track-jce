@@ -9,25 +9,26 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.micom.admissiontrackjce.destinations.LoginScreenDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+private lateinit var auth: FirebaseAuth
 fun sendData(name: String,
                  number: String,
                  enquirytype: String,
@@ -56,7 +57,6 @@ fun TextInputs(navigator: DestinationsNavigator) {
     ){
 
         Column {
-            Text(text = "Admission Enquiry", style = MaterialTheme.typography.h5, modifier = Modifier.padding(8.dp))
             var name by remember { mutableStateOf("") }
             var address by remember { mutableStateOf("") }
             var status by remember { mutableStateOf("") }
@@ -65,10 +65,25 @@ fun TextInputs(navigator: DestinationsNavigator) {
             var department by remember { mutableStateOf("") }
             val context = LocalContext.current
 
-            // for preview add same text to all the fields
+            auth = FirebaseAuth.getInstance()
 
+            // for preview add same text to all the fields
             // Normal Text Input field with floating label
             // placeholder is same as hint in xml of edit text
+            TopAppBar(
+                title = {
+                    Text(text = "Admission Enquiry",color = Color.White)
+                },
+                actions = {
+                    IconButton(onClick = {
+                        auth.signOut()
+                        navigator.navigate(LoginScreenDestination())
+                    }) {
+                        Icon(imageVector = Icons.Filled.Logout,"")
+                    }
+                }
+            )
+
             OutlinedTextField(
                 value = name,
                 modifier = Modifier
