@@ -4,7 +4,9 @@ import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -25,24 +27,26 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.micom.admissiontrackjce.destinations.LoginScreenDestination
+import com.micom.admissiontrackjce.destinations.TextInputsDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 private lateinit var auth: FirebaseAuth
-fun sendData(name: String,
+fun sendData(    category: String,
+                 name: String,
                  number: String,
                  enquirytype: String,
                  dept: String,
-                 address: String,
+                 area: String,
+                 pincode: String,
                  status: String) {
 
         val db = Firebase.firestore
-        val et = Enquirydetail(name, number, enquirytype, dept, address, status)
+        val et = Enquirydetail(category, name, number, enquirytype, dept, area,pincode, status)
         db.collection("et").add(et).addOnCompleteListener {
             Log.d("Firebase","Document Saved")
         }.addOnFailureListener {
             Log.d("Firebase","Save Failed $it")
-
         }
 }
 
@@ -50,19 +54,19 @@ fun sendData(name: String,
 @Composable
 fun TextInputs(navigator: DestinationsNavigator) {
     val scaffoldState = rememberScaffoldState()
-    val scope = rememberCoroutineScope()
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         scaffoldState = scaffoldState
     ){
-
-        Column {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             var name by remember { mutableStateOf("") }
-            var address by remember { mutableStateOf("") }
+            var area by remember { mutableStateOf("") }
             var status by remember { mutableStateOf("") }
             var number by remember { mutableStateOf("") }
             var enquirytype by remember { mutableStateOf("") }
             var department by remember { mutableStateOf("") }
+            var category by remember { mutableStateOf("") }
+            var pincode by remember { mutableStateOf("") }
             val context = LocalContext.current
 
             auth = FirebaseAuth.getInstance()
@@ -83,7 +87,6 @@ fun TextInputs(navigator: DestinationsNavigator) {
                     }
                 }
             )
-
             OutlinedTextField(
                 value = name,
                 modifier = Modifier
@@ -112,42 +115,44 @@ fun TextInputs(navigator: DestinationsNavigator) {
                 }
             )
 
-            enquirytype = DropDownMenu(suggestions = listOf("Phone Call", "Whatsapp", "Chatbot", "Direct","Email","Consultant"), listName = "Enquiry Type")
+            enquirytype = dropDownMenu(suggestions = listOf("Phone Call", "Whatsapp", "Chatbot", "Direct","Email","Consultant"), listName = "Enquiry Type")
 
+            category = dropDownMenu(suggestions = listOf("UG","Lateral","PG"), listName = "Category")
 
-
-            department = DropDownMenu(suggestions = listOf("IT","CSE","ECE","EEE","CIVIL","MECH","BME"), listName = "Department")
+            department = dropDownMenu(suggestions = listOf("IT","CSE","ECE","EEE","CIVIL","MECH","BME","AI & DS","CS & BS","AI & ML","Cyber Secuirty"), listName = "Department")
 
             OutlinedTextField(
-                value = address,
+                value = area,
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                label = { Text(text = "Address") },
+                label = { Text(text = "Area") },
                 placeholder = { Text(text = "") },
                 onValueChange = {
-                    address = it
+                    area = it
                 }
             )
             OutlinedTextField(
-                value = status,
+                value = pincode,
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-                label = { Text(text = "Status") },
+                label = { Text(text = "Pincode") },
                 placeholder = { Text(text = "") },
                 onValueChange = {
-                    status = it
+                    pincode = it
                 }
             )
+
+            status = dropDownMenu(suggestions = listOf("Enquiry","Positive","May be Admitted","May be Converted","Rejected"), listName = "Status")
+
             Spacer(modifier = Modifier.height(8.dp))
             Button(onClick = {
-                             sendData(name,number,enquirytype,department,address,status)
-                Toast.makeText(context,
-                    "Submitted Successfully",Toast.LENGTH_LONG).show()
-
+                sendData(category,name,number,enquirytype,department,area,pincode,status)
+                Toast.makeText(context,"Submitted Successfully",Toast.LENGTH_LONG).show()
+                navigator.navigate(TextInputsDestination())
             },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -161,7 +166,7 @@ fun TextInputs(navigator: DestinationsNavigator) {
 }
 
 @Composable
-fun DropDownMenu(suggestions: List<String>,listName: String): String {
+fun dropDownMenu(suggestions: List<String>, listName: String): String {
 
 
 
