@@ -44,7 +44,7 @@ fun sendData(    category: String,
         val db = Firebase.firestore
         val et = Enquirydetail(category, name, number, enquirytype, dept, area,pincode, status)
         db.collection("et").add(et).addOnCompleteListener {
-            Log.d("Firebase","Document Saved")
+            Log.d("Firebase","Submitted Succesfully")
         }.addOnFailureListener {
             Log.d("Firebase","Save Failed $it")
         }
@@ -138,7 +138,7 @@ fun TextInputs(navigator: DestinationsNavigator) {
                 modifier = Modifier
                     .padding(8.dp)
                     .fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 label = { Text(text = "Pincode") },
                 placeholder = { Text(text = "") },
                 onValueChange = {
