@@ -1,5 +1,6 @@
 package com.micom.admissiontrackjce
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -16,6 +17,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.google.firebase.auth.FirebaseAuth
 import com.micom.admissiontrackjce.destinations.RegisterationDestination
+import com.micom.admissiontrackjce.destinations.ReportViewDestination
 import com.micom.admissiontrackjce.destinations.TextInputsDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -32,15 +34,22 @@ fun LoginScreen(navigator: DestinationsNavigator) {
 
     mAuth = FirebaseAuth.getInstance()
     val currentuser = mAuth.currentUser
-
+    val checkMail = currentuser?.email
     if (currentuser != null) {
-        navigator.navigate(TextInputsDestination())
+        if (checkMail != null) {
+            if(checkMail.contains("admin")){
+                navigator.navigate(ReportViewDestination())
+            }
+            else{
+                navigator.navigate(TextInputsDestination())
+            }
+        }
     } else {
         Column(
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
                 .fillMaxSize()
-                .padding(50.dp)
+                .padding(8.dp)
         ) {
             OutlinedTextField(
                 value = mailid,
@@ -84,9 +93,14 @@ fun LoginScreen(navigator: DestinationsNavigator) {
                 onClick = {
                     mAuth.signInWithEmailAndPassword(mailid, password).addOnCompleteListener {
                         if (it.isSuccessful) {
-                            navigator.navigate(TextInputsDestination())
+                            if(mailid.contains("admin")){
+                                navigator.navigate(ReportViewDestination())
+                            }
+                            else{
+                                navigator.navigate(TextInputsDestination())
+                            }
                         } else {
-                            Toast.makeText(context, "Failed", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "Incorrect Password or Email", Toast.LENGTH_SHORT).show()
                         }
                     }
                     //when the button is clicked to route to enquiry screen*/

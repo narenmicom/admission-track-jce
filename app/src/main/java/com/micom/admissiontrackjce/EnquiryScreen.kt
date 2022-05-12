@@ -2,27 +2,20 @@ package com.micom.admissiontrackjce
 
 import android.util.Log
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -146,13 +139,17 @@ fun TextInputs(navigator: DestinationsNavigator) {
                 }
             )
 
-            status = dropDownMenu(suggestions = listOf("Enquiry","Positive","May be Admitted","May be Converted","Rejected"), listName = "Status")
+            status = dropDownMenu(suggestions = listOf("Enquiry","Positive","May be Admitted","May be Converted","Admitted","Rejected"), listName = "Status")
 
             Spacer(modifier = Modifier.height(8.dp))
-            Button(onClick = {
+            Button(onClick = {if (category!="" && name!="" && number!="" && enquirytype!="" && department!="" && area!="" && pincode!="" && status!=""){
                 sendData(category,name,number,enquirytype,department,area,pincode,status)
                 Toast.makeText(context,"Submitted Successfully",Toast.LENGTH_LONG).show()
                 navigator.navigate(TextInputsDestination())
+            }
+                else {
+                Toast.makeText(context,"Fill all the Fields correctly",Toast.LENGTH_LONG).show()
+            }
             },
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -165,59 +162,45 @@ fun TextInputs(navigator: DestinationsNavigator) {
     }
 }
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun dropDownMenu(suggestions: List<String>, listName: String): String {
-
-
 
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf("") }
 
-    var textfieldSize by remember { mutableStateOf(Size.Zero) }
-
-    val icon = if (expanded)
-
-        Icons.Filled.KeyboardArrowUp
-    else
-        Icons.Filled.KeyboardArrowDown
-    OutlinedTextField(
-        value = selectedText,
-        onValueChange = { selectedText = it },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .onGloballyPositioned { coordinates ->
-                //This value is used to assign to the DropDown the same width
-                textfieldSize = coordinates.size.toSize()
-            },
-        label = { Text(listName) },
-        trailingIcon = {
-            Icon(icon,"",
-                Modifier.clickable { expanded = !expanded })
-        }
-    )
-    DropdownMenu(
+    ExposedDropdownMenuBox(
         expanded = expanded,
-        onDismissRequest = { expanded = false },
-        modifier = Modifier
-            .width(with(LocalDensity.current){textfieldSize.width.toDp()})
-    ) {
-        suggestions.forEach { label ->
-            DropdownMenuItem(onClick = {
-                selectedText = label
-                expanded = false
-            }) {
-                Text(text = label)
+        onExpandedChange = { expanded = !expanded} ) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp),
+            readOnly = true,
+            value = selectedText,
+            label = { Text(listName)},
+            onValueChange = { },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(
+                    expanded = expanded
+                )
+            })
+            ExposedDropdownMenu(
+                expanded = expanded,
+                onDismissRequest = {
+                    expanded = false
+                }) {
+                suggestions.forEach{
+                    selectedOption ->
+                    DropdownMenuItem(onClick = {
+                        selectedText = selectedOption
+                        expanded = false
+                    }) {
+                        Text(text = selectedOption)
+                    }
+                }
             }
-        }
     }
     return selectedText
 }
-/*
 
-@Composable
-fun MenuBar(){
-    TopAppBar() {
-
-    }
-}*/
