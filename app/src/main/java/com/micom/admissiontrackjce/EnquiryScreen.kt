@@ -23,6 +23,11 @@ import com.micom.admissiontrackjce.destinations.LoginScreenDestination
 import com.micom.admissiontrackjce.destinations.TextInputsDestination
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import java.sql.Timestamp
+import java.util.*
+
+val stamp = Timestamp(System.currentTimeMillis())
+val currentDate = Date(stamp.time)
 
 private lateinit var auth: FirebaseAuth
 fun sendData(    category: String,
@@ -32,10 +37,11 @@ fun sendData(    category: String,
                  dept: String,
                  area: String,
                  pincode: String,
-                 status: String) {
+                 status: String){
 
         val db = Firebase.firestore
-        val et = Enquirydetail(category, name, number, enquirytype, dept, area,pincode, status)
+
+        val et = Enquirydetail(category, name, number, enquirytype, dept, area,pincode,status,currentDate)
         db.collection("et").add(et).addOnCompleteListener {
             Log.d("Firebase","Submitted Succesfully")
         }.addOnFailureListener {
